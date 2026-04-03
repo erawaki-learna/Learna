@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import Layout from '../components/Layout';
 import { FileText, Sparkles, CheckCircle } from 'lucide-react';
+import AIAdvisor from './AIAdvisor';
 
 const divisions = [
   'ATC',
@@ -27,7 +28,7 @@ const urgencyOptions = [
 
 export default function NewRequest() {
   const { profile } = useAuth();
-  const [showForm, setShowForm] = useState(false);
+  const [mode, setMode] = useState<'choose' | 'form' | 'ai'>('choose');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -85,7 +86,7 @@ export default function NewRequest() {
 
       if (insertError) throw insertError;
 
-      window.location.href = profile.role === 'admin' ? '/' : '/';
+      window.location.href = '/';
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -108,9 +109,17 @@ export default function NewRequest() {
     }));
   };
 
-  const currentPage = profile?.role === 'admin' ? '/' : '/';
+  // AI ADVISOR MODE
+  if (mode === 'ai') {
+    return (
+      <Layout currentPage="/new-request">
+        <AIAdvisor onBack={() => setMode('choose')} />
+      </Layout>
+    );
+  }
 
-  if (!showForm) {
+  // CHOOSE MODE
+  if (mode === 'choose') {
     return (
       <Layout currentPage="/new-request">
         <div className="max-w-4xl mx-auto">
@@ -121,7 +130,7 @@ export default function NewRequest() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <button
-              onClick={() => setShowForm(true)}
+              onClick={() => setMode('form')}
               className="bg-white rounded-lg p-8 shadow-sm border border-navy/10 hover:border-gold transition-all hover:shadow-md text-left group"
             >
               <div className="w-12 h-12 bg-navy rounded-lg flex items-center justify-center mb-4">
@@ -137,37 +146,41 @@ export default function NewRequest() {
               </span>
             </button>
 
-            <div className="bg-white rounded-lg p-8 shadow-sm border border-navy/10 opacity-60 cursor-not-allowed relative">
+            <button
+              onClick={() => setMode('ai')}
+              className="bg-white rounded-lg p-8 shadow-sm border-2 border-gold hover:shadow-lg transition-all text-left group relative"
+            >
               <div className="absolute top-4 right-4">
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-gold/20 text-gold text-xs font-medium rounded-full">
                   <Sparkles className="w-3 h-3" />
                   AI POWERED
                 </span>
               </div>
-              <div className="w-12 h-12 bg-navy/20 rounded-lg flex items-center justify-center mb-4">
-                <Sparkles className="w-6 h-6 text-navy/40" />
+              <div className="w-12 h-12 bg-navy rounded-lg flex items-center justify-center mb-4">
+                <Sparkles className="w-6 h-6 text-gold" />
               </div>
-              <h2 className="text-xl font-serif text-navy/60 mb-2">AI Learning Advisor</h2>
-              <p className="text-navy/40 mb-4">
-                Get AI-powered recommendations and a tailored learning solution based on your
-                needs.
+              <h2 className="text-xl font-serif text-navy mb-2">AI Learning Advisor</h2>
+              <p className="text-navy/60 mb-4">
+                Have a conversation with our AI advisor. Speak or type — it guides you through a structured needs analysis.
               </p>
-              <span className="inline-flex items-center text-navy/40 font-medium">
-                Coming Soon
+              <span className="inline-flex items-center text-gold font-medium group-hover:gap-2 transition-all">
+                Start AI Consultation
+                <span className="ml-2 group-hover:ml-0">→</span>
               </span>
-            </div>
+            </button>
           </div>
         </div>
       </Layout>
     );
   }
 
+  // QUICK FORM MODE
   return (
     <Layout currentPage="/new-request">
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
           <button
-            onClick={() => setShowForm(false)}
+            onClick={() => setMode('choose')}
             className="text-navy/60 hover:text-navy mb-4 text-sm"
           >
             ← Back to options
@@ -314,7 +327,7 @@ export default function NewRequest() {
           <div className="flex gap-4 pt-4">
             <button
               type="button"
-              onClick={() => setShowForm(false)}
+              onClick={() => setMode('choose')}
               className="flex-1 px-6 py-3 border border-navy/20 text-navy rounded-lg hover:bg-cream transition-colors"
               disabled={loading}
             >
