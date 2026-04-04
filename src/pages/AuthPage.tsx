@@ -33,8 +33,9 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-cream flex flex-col items-center justify-center p-8">
       {/* Logo */}
-      <div className="mb-8">
-        <img src="/learna-logo-v2.png" alt="Learna" className="w-48 h-48 object-contain" />
+      <div className="mb-6 flex flex-col items-center">
+        <img src="/learna-logo-v2.png" alt="Learna" className="w-56 h-56 object-contain drop-shadow-lg" />
+        <p className="text-navy/50 text-xs tracking-widest uppercase mt-1 font-medium">HNB Assurance PLC</p>
       </div>
 
       {/* Login Card */}
