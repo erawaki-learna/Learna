@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
-const GEMINI_API_KEY = 'AIzaSyA4Cu98sryXB7BK_8s-IS4gNpyYjYWVrGc';
+const GEMINI_API_KEY = 'AAIzaSyCZ8YtB2sxiIbv8DuDRGL8-Ymk_IRDbPwg';
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 const SYSTEM_PROMPT = `You are the Learna AI Learning Needs Advisor for HNB Assurance PLC, a life insurance company in Sri Lanka.
@@ -91,13 +91,13 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
       setSpeechSupported(true);
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
-      recognition.interimResults = true;
+      recognition.interimResults = false;
       recognition.lang = 'en-US';
 
-      recognition.onresult = (event: any) => {
+       recognition.onresult = (event: any) => {
         let finalTranscript = '';
         let interimTranscript = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
+        for (let i = 0; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
             finalTranscript += transcript;
@@ -106,13 +106,9 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
           }
         }
         if (finalTranscript) {
-          setInput(prev => prev + finalTranscript);
-        } else if (interimTranscript) {
-          // Show interim results in a subtle way
-          setInput(prev => {
-            const base = prev.replace(/\[listening\.\.\.\].*$/, '');
-            return base + interimTranscript;
-          });
+          setInput(finalTranscript);
+        } else {
+          setInput(interimTranscript);
         }
       };
 
