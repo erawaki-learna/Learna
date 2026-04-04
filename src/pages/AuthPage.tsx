@@ -32,11 +32,11 @@ export default function AuthPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-6"
+      className="min-h-screen flex flex-col items-center justify-end p-6 pb-12"
       style={{
         backgroundImage: 'url(/learna-bg.png)',
         backgroundSize: 'cover',
-        backgroundPosition: 'center top',
+        backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
         backgroundColor: '#080f1e',
       }}
