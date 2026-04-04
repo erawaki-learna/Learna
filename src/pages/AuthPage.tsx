@@ -31,7 +31,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-cream flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center p-8" style={{background: 'linear-gradient(135deg, #f8f6f0 0%, #eef2f7 50%, #f0f4f8 100%)'}}>
       {/* Logo */}
       <div className="mb-6 flex flex-col items-center">
         <img src="/learna-logo-v2.png" alt="Learna" className="w-56 h-56 object-contain drop-shadow-lg" />
