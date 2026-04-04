@@ -35,8 +35,9 @@ export default function AuthPage() {
       style={{
         minHeight: '100vh',
         backgroundImage: 'url(/learna-bg.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center top',
+        backgroundRepeat: 'no-repeat',
         backgroundColor: '#080f1e',
         display: 'flex',
         flexDirection: 'column',
