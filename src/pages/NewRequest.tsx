@@ -46,17 +46,17 @@ export default function NewRequest() {
     const divPrefix = division.slice(0, 4).toUpperCase().replace(/\s/g, '');
     const year = '2026';
 
-    const { count, error } = await supabase
+    const { data, error } = await supabase
       .from('requests')
-      .select('*', { count: 'exact', head: true })
-      .ilike('request_id', `QR-${divPrefix}-${year}-%`);
+      .select('request_id')
+      .like('request_id', `QR-${divPrefix}-${year}-%`);
 
     if (error) {
       console.error('Error counting requests:', error);
       return `QR-${divPrefix}-${year}-001`;
     }
 
-    const nextNum = ((count || 0) + 1).toString().padStart(3, '0');
+    const nextNum = ((data?.length || 0) + 1).toString().padStart(3, '0');
     return `QR-${divPrefix}-${year}-${nextNum}`;
   };
 
