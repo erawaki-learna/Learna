@@ -31,36 +31,25 @@ export default function AuthPage() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        backgroundImage: 'url(/learna-bg.png)',
-        backgroundSize: 'contain',
-        backgroundPosition: 'center top',
-        backgroundRepeat: 'no-repeat',
-        backgroundColor: '#080f1e',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        paddingBottom: '48px',
-        paddingLeft: '16px',
-        paddingRight: '16px',
-      }}
-    >
-      <div
-        style={{
-          width: '100%',
-          maxWidth: '360px',
-          borderRadius: '16px',
-          padding: '28px',
-          background: 'rgba(6, 12, 32, 0.80)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(100, 160, 255, 0.20)',
-          boxShadow: '0 8px 48px rgba(0,0,0,0.6)',
-        }}
-      >
+    <div style={{ minHeight: '100vh', background: '#07101f', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+      {/* Logo Image — top half, full width, no overlap */}
+      <div style={{ width: '100%', maxWidth: '700px', padding: '0' }}>
+        <img src="/learna-bg.png" alt="Learna" style={{ width: '100%', display: 'block' }} />
+      </div>
+
+      {/* Login Form — sits cleanly below */}
+      <div style={{
+        width: '100%',
+        maxWidth: '360px',
+        borderRadius: '16px',
+        padding: '28px',
+        margin: '0 16px 32px',
+        background: 'rgba(255,255,255,0.05)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(100,160,255,0.15)',
+        boxShadow: '0 8px 48px rgba(0,0,0,0.4)',
+      }}>
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <h2 style={{ color: 'white', fontSize: '18px', fontWeight: 600, margin: 0 }}>
             {isSignUp ? 'Create Account' : 'Welcome Back'}
@@ -85,23 +74,20 @@ export default function AuthPage() {
                 required disabled={loading} />
             </div>
           )}
-
           <div style={{ marginBottom: '12px' }}>
             <label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Email Address</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
               style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: 'white', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
               required disabled={loading} />
           </div>
-
           <div style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '11px', marginBottom: '6px' }}>Password</label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
               style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: 'white', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
               required disabled={loading} minLength={6} />
           </div>
-
           <button type="submit" disabled={loading}
-            style={{ width: '100%', padding: '11px', borderRadius: '8px', background: 'linear-gradient(135deg, #c9940a, #f0b429)', color: '#0a1628', fontWeight: 700, fontSize: '14px', border: 'none', cursor: 'pointer', boxShadow: '0 4px 20px rgba(201,148,10,0.4)' }}>
+            style={{ width: '100%', padding: '11px', borderRadius: '8px', background: 'linear-gradient(135deg, #c9940a, #f0b429)', color: '#07101f', fontWeight: 700, fontSize: '14px', border: 'none', cursor: 'pointer', boxShadow: '0 4px 20px rgba(201,148,10,0.4)' }}>
             {loading ? 'Please wait...' : isSignUp ? 'Create Account' : 'Sign In'}
           </button>
         </form>
@@ -114,7 +100,7 @@ export default function AuthPage() {
         </div>
       </div>
 
-      <p style={{ color: 'rgba(255,255,255,0.12)', fontSize: '10px', marginTop: '16px' }}>
+      <p style={{ color: 'rgba(255,255,255,0.12)', fontSize: '10px', marginBottom: '16px' }}>
         © 2026 HNB Assurance PLC. All rights reserved.
       </p>
     </div>
