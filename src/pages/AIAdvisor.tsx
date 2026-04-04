@@ -178,6 +178,7 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
             content: m.content
           })),
         }),
+      });
 
       const data = await response.json();
       const text = data.content?.[0]?.text ||
