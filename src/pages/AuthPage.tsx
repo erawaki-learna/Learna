@@ -50,7 +50,7 @@ export default function AuthPage() {
             <img
               src="/learna-logo.png"
               alt="Learna"
-              className="w-24 h-24 object-contain"
+              className="w-48 h-auto object-contain"
               style={{ mixBlendMode: 'screen' }}
             />
           </div>
@@ -82,14 +82,16 @@ export default function AuthPage() {
           </div>
 
           <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-serif text-navy mb-2">
-              {isSignUp ? 'Create Account' : 'Welcome Back'}
-            </h2>
-            <p className="text-navy/60 mb-6">
-              {isSignUp
-                ? 'Sign up to access the L&D portal'
-                : 'Sign in to your account to continue'}
-            </p>
+            <div className="flex justify-center mb-6">
+              <img
+                src="/learna-logo.png"
+                alt="Learna"
+                className="w-40 h-40 object-contain"
+              />
+            </div>
+            {isSignUp && (
+              <p className="text-center text-navy/60 mb-6 text-sm">Sign up to access the L&D portal</p>
+            )}
 
             {error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
