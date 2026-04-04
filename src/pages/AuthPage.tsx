@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { GraduationCap } from 'lucide-react';
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -44,16 +43,18 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex">
+      {/* Left Panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-navy flex-col justify-between p-12">
         <div>
           <div className="flex items-center gap-3 mb-8">
-            <GraduationCap className="w-10 h-10 text-gold" strokeWidth={1.5} />
-            <div>
-              <h1 className="text-3xl font-serif text-white">LEARNA</h1>
-              <p className="text-gold text-sm">HNB Assurance PLC</p>
-            </div>
+            <img
+              src="/learna-logo.png"
+              alt="Learna"
+              className="w-24 h-24 object-contain"
+              style={{ mixBlendMode: 'screen' }}
+            />
           </div>
-          <div className="mt-16">
+          <div className="mt-8">
             <h2 className="text-4xl font-serif text-white leading-tight mb-4">
               Continuous Learning.<br />Measurable Performance.
             </h2>
@@ -67,11 +68,17 @@ export default function AuthPage() {
         </div>
       </div>
 
+      {/* Right Panel */}
       <div className="flex-1 bg-cream flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          <div className="lg:hidden flex items-center gap-2 justify-center mb-8">
-            <GraduationCap className="w-8 h-8 text-gold" strokeWidth={1.5} />
-            <h1 className="text-2xl font-serif text-navy">LEARNA</h1>
+
+          {/* Mobile logo */}
+          <div className="lg:hidden flex justify-center mb-8">
+            <img
+              src="/learna-logo.png"
+              alt="Learna"
+              className="w-32 h-32 object-contain"
+            />
           </div>
 
           <div className="bg-white rounded-lg shadow-lg p-8">
@@ -93,9 +100,7 @@ export default function AuthPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {isSignUp && (
                 <div>
-                  <label className="block text-sm font-medium text-navy mb-2">
-                    Full Name
-                  </label>
+                  <label className="block text-sm font-medium text-navy mb-2">Full Name</label>
                   <input
                     type="text"
                     value={fullName}
@@ -108,9 +113,7 @@ export default function AuthPage() {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-navy mb-2">
-                  Email Address
-                </label>
+                <label className="block text-sm font-medium text-navy mb-2">Email Address</label>
                 <input
                   type="email"
                   value={email}
@@ -122,9 +125,7 @@ export default function AuthPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-navy mb-2">
-                  Password
-                </label>
+                <label className="block text-sm font-medium text-navy mb-2">Password</label>
                 <input
                   type="password"
                   value={password}
@@ -141,26 +142,17 @@ export default function AuthPage() {
                 disabled={loading}
                 className="w-full bg-gold hover:bg-gold/90 text-navy font-medium py-3 rounded-lg transition-colors disabled:opacity-50"
               >
-                {loading
-                  ? 'Please wait...'
-                  : isSignUp
-                  ? 'Create Account'
-                  : 'Sign In'}
+                {loading ? 'Please wait...' : isSignUp ? 'Create Account' : 'Sign In'}
               </button>
             </form>
 
             <div className="mt-6 text-center">
               <button
-                onClick={() => {
-                  setIsSignUp(!isSignUp);
-                  setError('');
-                }}
+                onClick={() => { setIsSignUp(!isSignUp); setError(''); }}
                 className="text-navy hover:text-gold transition-colors text-sm"
                 disabled={loading}
               >
-                {isSignUp
-                  ? 'Already have an account? Sign in'
-                  : "Don't have an account? Sign up"}
+                {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
               </button>
             </div>
           </div>
