@@ -31,7 +31,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8" style={{background: 'linear-gradient(135deg, #f8f6f0 0%, #eef2f7 50%, #f0f4f8 100%)'}}>
+    <div className="min-h-screen flex flex-col items-center justify-center p-8" style={{background: 'linear-gradient(135deg, #0a1628 0%, #0d1f3c 60%, #0a1628 100%)'}}>
       {/* Logo */}
       <div className="mb-6 flex flex-col items-center">
         <img src="/learna-logo-v2.png" alt="Learna" className="w-56 h-56 object-contain drop-shadow-lg" />
@@ -39,7 +39,7 @@ export default function AuthPage() {
       </div>
 
       {/* Login Card */}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+      <div className="w-full max-w-md rounded-2xl p-8" style={{background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(10px)'}}>
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
             {error}
@@ -49,7 +49,7 @@ export default function AuthPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {isSignUp && (
             <div>
-              <label className="block text-sm font-medium text-navy mb-2">Full Name</label>
+              <label className="block text-sm font-medium text-white/80 mb-2">Full Name</label>
               <input
                 type="text"
                 value={fullName}
@@ -62,7 +62,7 @@ export default function AuthPage() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-navy mb-2">Email Address</label>
+            <label className="block text-sm font-medium text-white/80 mb-2">Email Address</label>
             <input
               type="email"
               value={email}
@@ -74,7 +74,7 @@ export default function AuthPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-navy mb-2">Password</label>
+            <label className="block text-sm font-medium text-white/80 mb-2">Password</label>
             <input
               type="password"
               value={password}
@@ -98,7 +98,7 @@ export default function AuthPage() {
         <div className="mt-6 text-center">
           <button
             onClick={() => { setIsSignUp(!isSignUp); setError(''); }}
-            className="text-navy/60 hover:text-gold transition-colors text-sm"
+            className="text-white/40 hover:text-gold transition-colors text-sm"
             disabled={loading}
           >
             {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
@@ -106,7 +106,7 @@ export default function AuthPage() {
         </div>
       </div>
 
-      <p className="mt-8 text-navy/30 text-xs">© 2026 HNB Assurance PLC. All rights reserved.</p>
+      <p className="mt-8 text-white/20 text-xs">© 2026 HNB Assurance PLC. All rights reserved.</p>
     </div>
   );
 }
