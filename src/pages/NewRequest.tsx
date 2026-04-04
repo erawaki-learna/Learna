@@ -66,12 +66,13 @@ export default function NewRequest() {
     setLoading(true);
 
     try {
-      if (!profile) throw new Error('Profile not found');
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not logged in');
 
       const requestId = await generateRequestId(formData.division);
 
       const { error: insertError } = await supabase.from('requests').insert({
-        user_id: profile.id,
+        user_id: user.id,
         request_id: requestId,
         requestor_name: formData.requestor_name,
         division: formData.division,

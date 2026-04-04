@@ -204,7 +204,9 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
   };
 
   const handleSubmitToLD = async () => {
-    if (!summary || !user) return;
+    if (!summary) return;
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) return;
 
     const { data: countData } = await supabase
       .from('requests')
@@ -213,11 +215,11 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
     const requestId = `QR-AI-2026-${seq}`;
 
     const { error } = await supabase.from('requests').insert({
-      user_id: user.id,
+      user_id: authUser.id,
       request_id: requestId,
-      requestor_name: profile?.full_name || '',
+      requestor_name: profile?.full_name || authUser.email || '',
       division: profile?.division || 'Not specified',
-      contact: profile?.email || '',
+      contact: profile?.email || authUser.email || '',
       business_problem: summary['BUSINESS PROBLEM'] || '',
       audience: summary['TARGET AUDIENCE'] || '',
       urgency: summary['URGENCY'] || 'Within 1 month',
