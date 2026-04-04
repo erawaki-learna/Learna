@@ -72,12 +72,12 @@ export default function AuthPage() {
       <div className="flex-1 bg-cream flex items-center justify-center p-8">
         <div className="w-full max-w-md">
 
-          {/* Mobile logo */}
-          <div className="lg:hidden flex justify-center mb-8">
+          {/* Logo - always visible on right panel */}
+          <div className="flex justify-center mb-8">
             <img
               src="/learna-logo.png"
               alt="Learna"
-              className="w-32 h-32 object-contain"
+              className="w-48 h-48 object-contain"
             />
           </div>
 
