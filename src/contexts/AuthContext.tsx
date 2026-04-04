@@ -1,6 +1,15 @@
-import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, AuthError } from '@supabase/supabase-js';
-import { supabase, Profile } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
+
+interface Profile {
+  id: string;
+  email: string;
+  full_name: string;
+  division: string | null;
+  role: string;
+  created_at: string;
+}
 
 interface AuthContextType {
   user: User | null;
@@ -11,138 +20,72 @@ interface AuthContextType {
   signOut: () => Promise<void>;
 }
 
+const ADMIN_EMAILS = ['eranda.wakista@hnbassurance.com', 'eranda.wakista@gmail.com'];
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const loadingProfile = useRef(false);
-  const profileLoaded = useRef(false);
+
+  const buildProfile = (u: User): Profile => ({
+    id: u.id,
+    email: u.email || '',
+    full_name: u.user_metadata?.full_name || u.email?.split('@')[0] || '',
+    division: u.user_metadata?.division || null,
+    role: ADMIN_EMAILS.includes(u.email || '') ? 'admin' : 'requestor',
+    created_at: u.created_at || new Date().toISOString(),
+  });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
       if (session?.user) {
-        loadProfile(session.user.id);
-      } else {
-        setLoading(false);
+        setUser(session.user);
+        setProfile(buildProfile(session.user));
       }
+      setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      if (!session?.user) {
+      if (session?.user) {
+        setUser(session.user);
+        setProfile(buildProfile(session.user));
+      } else {
+        setUser(null);
         setProfile(null);
-        setLoading(false);
-        profileLoaded.current = false;
       }
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const loadProfile = async (userId: string) => {
-    if (loadingProfile.current || profileLoaded.current) return;
-    loadingProfile.current = true;
-
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
-
-      if (data) {
-        setProfile(data);
-        profileLoaded.current = true;
-        return;
-      }
-
-      if (error) {
-        console.warn('Profile query error:', error.message);
-      }
-
-      // Create profile if not found
-      const authUserResponse = await supabase.auth.getUser();
-      const authUser = authUserResponse.data?.user;
-      if (!authUser) { setLoading(false); return; }
-
-      const isAdmin =
-        authUser.email === 'eranda.wakista@hnbassurance.com' ||
-        authUser.email === 'eranda.wakista@gmail.com';
-
-      const { data: newProfile, error: insertError } = await supabase
-        .from('profiles')
-        .insert({
-          id: userId,
-          email: authUser.email,
-          full_name: authUser.user_metadata?.full_name || '',
-          role: isAdmin ? 'admin' : 'requestor',
-        })
-        .select()
-        .single();
-
-      if (insertError) {
-        // Fallback to client-side profile
-        setProfile({
-          id: userId,
-          email: authUser.email || '',
-          full_name: authUser.user_metadata?.full_name || '',
-          division: null,
-          role: isAdmin ? 'admin' : 'requestor',
-          created_at: new Date().toISOString(),
-        });
-      } else if (newProfile) {
-        setProfile(newProfile);
-      }
-
-      profileLoaded.current = true;
-    } catch (error) {
-      console.error('Error in loadProfile:', error);
-    } finally {
-      setLoading(false);
-      loadingProfile.current = false;
-    }
-  };
-
   const signIn = async (email: string, password: string) => {
-    try {
-      profileLoaded.current = false;
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return { error };
-      if (data.session?.user) {
-        setUser(data.session.user);
-        await loadProfile(data.session.user.id);
-      }
-      return { error: null };
-    } catch (err) {
-      return { error: err as unknown as AuthError };
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (!error && data.user) {
+      setUser(data.user);
+      setProfile(buildProfile(data.user));
     }
+    return { error: error ?? null };
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
-    try {
-      profileLoaded.current = false;
-      const { data, error } = await supabase.auth.signUp({
-        email, password,
-        options: { data: { full_name: fullName } },
-      });
-      if (error) return { error };
-      if (data.user) {
-        setUser(data.user);
-        await loadProfile(data.user.id);
-      }
-      return { error: null };
-    } catch (err) {
-      return { error: err as unknown as AuthError };
+    const { data, error } = await supabase.auth.signUp({
+      email, password,
+      options: { data: { full_name: fullName } }
+    });
+    if (!error && data.user) {
+      setUser(data.user);
+      setProfile(buildProfile(data.user));
     }
+    return { error: error ?? null };
   };
 
   const signOut = async () => {
-    profileLoaded.current = false;
     await supabase.auth.signOut();
-    localStorage.clear();
+    setUser(null);
+    setProfile(null);
     window.location.href = '/auth';
   };
 
@@ -155,8 +98,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (context === undefined) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 }
