@@ -162,16 +162,25 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
       }));
 
       const response = await fetch('https://api.anthropic.com/v1/messages', {
-  method: 'POST',
-headers: { 
-  'Content-Type': 'application/json',
-  'x-api-key': 'YREMOVED',
-  'anthropic-version': '2023-06-01',
-  'anthropic-dangerous-direct-browser-access': 'true',
-},
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': 'YREMOVED',
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1000,
+          system: SYSTEM_PROMPT,
+          messages: newMessages.map(m => ({
+            role: m.role === 'assistant' ? 'assistant' : 'user',
+            content: m.content
+          })),
+        }),
 
       const data = await response.json();
-      cconst text = data.content?.[0]?.text ||
+      const text = data.content?.[0]?.text ||
         "I'm having trouble connecting right now. Could you please repeat that?";
 
       const assistantMsg: Message = { role: 'assistant', content: text };
