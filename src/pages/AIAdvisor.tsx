@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
-const GEMINI_API_KEY = 'AAIzaSyCZ8YtB2sxiIbv8DuDRGL8-Ymk_IRDbPwg';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+const AI_URL = 'https://api.anthropic.com/v1/messages'
 
 const SYSTEM_PROMPT = `You are the Learna AI Learning Needs Advisor for HNB Assurance PLC, a life insurance company in Sri Lanka.
 
@@ -162,17 +161,17 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
         parts: [{ text: m.content }]
       }));
 
-      const response = await fetch(GEMINI_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents: apiMessages,
-        }),
-      });
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+  method: 'POST',
+headers: { 
+  'Content-Type': 'application/json',
+  'x-api-key': 'YREMOVED',
+  'anthropic-version': '2023-06-01',
+  'anthropic-dangerous-direct-browser-access': 'true',
+},
 
       const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      cconst text = data.content?.[0]?.text ||
         "I'm having trouble connecting right now. Could you please repeat that?";
 
       const assistantMsg: Message = { role: 'assistant', content: text };
