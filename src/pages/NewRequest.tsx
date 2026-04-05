@@ -1,4 +1,5 @@
 import { useState } from 'react';
+// Learna v2.1
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import Layout from '../components/Layout';
