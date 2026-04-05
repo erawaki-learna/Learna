@@ -43,22 +43,11 @@ export default function NewRequest() {
     manager_commitment: false,
   });
 
-  const generateRequestId = async (division: string) => {
+  const generateRequestId = (division: string) => {
     const divPrefix = division.slice(0, 4).toUpperCase().replace(/\s/g, '');
     const year = '2026';
-
-    const { data, error } = await supabase
-      .from('requests')
-      .select('request_id')
-      .like('request_id', `QR-${divPrefix}-${year}-%`);
-
-    if (error) {
-      console.error('Error counting requests:', error);
-      return `QR-${divPrefix}-${year}-001`;
-    }
-
-    const nextNum = ((data?.length || 0) + 1).toString().padStart(3, '0');
-    return `QR-${divPrefix}-${year}-${nextNum}`;
+    const timestamp = Date.now().toString().slice(-4);
+    return `QR-${divPrefix}-${year}-${timestamp}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,7 +59,7 @@ export default function NewRequest() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not logged in');
 
-      const requestId = await generateRequestId(formData.division);
+      const requestId = generateRequestId(formData.division);
 
       const { error: insertError } = await supabase.from('requests').insert({
         user_id: user.id,
