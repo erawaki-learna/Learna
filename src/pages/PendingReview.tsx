@@ -18,7 +18,7 @@ export default function PendingReview() {
   .select('id, title, description, status, created_at, user_id') as any;
 
       if (error) throw error;
-      setRequests(data || []);
+      setRequests(data ?? []);
     } catch (error) {
       console.error('Error loading requests:', error);
     } finally {

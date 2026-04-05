@@ -17,11 +17,10 @@ export default function MyRequests() {
 
   const loadRequests = async () => {
     try {
-      const { data, error } = await supabase
-        .from('requests')
-        .select('id, title, description, status, created_at, user_id')
-        .eq('user_id', profile?.id)
-        .order('created_at', { ascending: false });
+const { data, error } = await supabase
+  .from('requests')
+  .select('*')
+  .eq('user_id', profile?.id);
 
       if (error) throw error;
       setRequests(data ?? []);
