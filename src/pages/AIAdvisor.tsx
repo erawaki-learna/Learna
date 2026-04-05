@@ -208,11 +208,11 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (!authUser) return;
 
-    const { data: countData } = await supabase
-      .from('requests')
-      .select('id', { count: 'exact' });
-    const seq = String((countData?.length || 0) + 1).padStart(3, '0');
-    const requestId = `QR-AI-2026-${seq}`;
+const { data: countData, error: countError } = await supabase
+  .from('requests')
+  .select('id') as any;
+
+if (countError) throw countError;
 
     const { error } = await supabase.from('requests').insert({
       user_id: authUser.id,

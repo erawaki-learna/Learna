@@ -85,13 +85,13 @@ export default function LearningCalendar() {
 
   const loadProgrammes = async () => {
     setLoading(true);
-    const { data } = await supabase.from('learning_programmes').select('*').order('start_date', { ascending: true });
+    const { data } = await supabase.from('learning_programmes').select('id, title, description, status, created_at, user_id') as any.order('start_date', { ascending: true });
     setProgrammes(data || []);
     setLoading(false);
   };
 
   const loadNominations = async () => {
-    const { data } = await supabase.from('nominations').select('*').order('created_at', { ascending: false });
+    const { data } = await supabase.from('nominations').select('id, title, description, status, created_at, user_id') as any.order('created_at', { ascending: false });
     setNominations(data || []);
   };
 
