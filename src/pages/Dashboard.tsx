@@ -15,7 +15,7 @@ export default function Dashboard() {
     try {
 const { data, error } = await supabase
   .from('requests')
-  .select('id, title, description, status, created_at, user_id') as any;
+  .select('*');
 
       if (error) throw error;
       setRequests(data || []);
@@ -74,17 +74,19 @@ const { data, error } = await supabase
     return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
-  const getUrgencyBadge = (urgency: string) => {
-    if (urgency.toLowerCase().includes('2 weeks')) {
-      return (
-        <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">
-          <AlertCircle className="w-3 h-3" />
-          Urgent
-        </span>
-      );
-    }
-    return null;
-  };
+const getUrgencyBadge = (urgency?: string) => {
+  if (!urgency) return null;
+
+  if (urgency.toLowerCase().includes('2 weeks')) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">
+        <AlertCircle className="w-3 h-3" />
+        Urgent
+      </span>
+    );
+  }
+  return null;
+};
 
   if (loading) {
     return (
