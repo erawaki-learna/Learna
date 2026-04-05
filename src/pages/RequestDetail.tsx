@@ -63,13 +63,11 @@ export default function RequestDetail() {
     }
   }, [requestId]);
 
-  const loadRequest = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('requests')
-        .select('id, title, description, status, created_at, user_id') as any
-        .eq('id', requestId)
-        .maybeSingle();
+const { data, error } = await supabase
+  .from('requests')
+  .select('id, title, description, status, created_at, user_id')
+  .eq('id', requestId)
+  .maybeSingle() as any;
 
       if (error) throw error;
       if (!data) throw new Error('Request not found');
