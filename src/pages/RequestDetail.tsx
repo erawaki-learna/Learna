@@ -67,7 +67,7 @@ export default function RequestDetail() {
     try {
       const { data, error } = await supabase
         .from('requests')
-        .select('*')
+        .select('id, title, description, status, created_at, user_id') as any
         .eq('id', requestId)
         .maybeSingle();
 
@@ -97,11 +97,10 @@ export default function RequestDetail() {
     setSaving(true);
 
     try {
-      const { error: updateError } = await supabase
-        .from('requests')
-        .update(managementData)
-        .eq('id', requestId);
-
+const { error: updateError } = await supabase
+  .from('requests')
+  .update(managementData)
+  .eq('id', requestId);
       if (updateError) throw updateError;
 
       setSuccess('Changes saved successfully');

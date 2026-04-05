@@ -19,12 +19,12 @@ export default function MyRequests() {
     try {
       const { data, error } = await supabase
         .from('requests')
-        .select('*')
+        .select('id, title, description, status, created_at, user_id')
         .eq('user_id', profile?.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setRequests(data || []);
+      setRequests(data ?? []);
     } catch (error) {
       console.error('Error loading requests:', error);
     } finally {

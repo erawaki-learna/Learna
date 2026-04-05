@@ -13,10 +13,9 @@ export default function Dashboard() {
 
   const loadRequests = async () => {
     try {
-      const { data, error } = await supabase
-        .from('requests')
-        .select('*')
-        .order('created_at', { ascending: false });
+const { data, error } = await supabase
+  .from('requests')
+  .select('id, title, description, status, created_at, user_id') as any;
 
       if (error) throw error;
       setRequests(data || []);

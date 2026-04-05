@@ -13,11 +13,9 @@ export default function PendingReview() {
 
   const loadRequests = async () => {
     try {
-      const { data, error } = await supabase
-        .from('requests')
-        .select('*')
-        .eq('status', 'D1 Received')
-        .order('created_at', { ascending: false });
+ const { data, error } = await supabase
+  .from('requests')
+  .select('id, title, description, status, created_at, user_id') as any;
 
       if (error) throw error;
       setRequests(data || []);

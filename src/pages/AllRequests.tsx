@@ -24,13 +24,12 @@ export default function AllRequests() {
 
   const loadRequests = async () => {
     try {
-      const { data, error } = await supabase
-        .from('requests')
-        .select('*')
-        .order('created_at', { ascending: false });
-
+const { data, error } = await supabase
+  .from('requests')
+  .select('id, title, description, status, created_at, user_id') as any
+  .order('created_at', { ascending: false });
       if (error) throw error;
-      setRequests(data || []);
+      setRequests(data ?? []);
     } catch (error) {
       console.error('Error loading requests:', error);
     } finally {
