@@ -25,6 +25,7 @@ export default function Layout({ children, currentPage }: LayoutProps) {
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { name: 'Pending Review', icon: Clock, path: '/pending' },
     { name: 'All Requests', icon: FileText, path: '/requests' },
+    { name: 'D1 System', icon: Calendar, path: '/d1' },
     { name: 'Learning Calendar', icon: Calendar, path: '/calendar' },
     { name: 'New Request', icon: Plus, path: '/new-request' },
   ];

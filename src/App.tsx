@@ -8,6 +8,10 @@ import RequestDetail from './pages/RequestDetail';
 import PendingReview from './pages/PendingReview';
 import AllRequests from './pages/AllRequests';
 import LearningCalendar from './pages/LearningCalendar';
+import D1Home from './pages/D1Home';
+import LearnaDNA from './pages/LearnaDNA';
+import OutcomeBuilder from './pages/OutcomeBuilder';
+import D1Package from './pages/D1Package';
 
 function App() {
   const { user, profile, loading } = useAuth();
@@ -61,6 +65,22 @@ function App() {
 
   if (path === '/calendar') {
     return <LearningCalendar />;
+  }
+
+  if (path === '/d1' || path === '/d1/home') {
+    return <D1Home onNavigate={(p) => { window.location.href = '/d1/' + p; }} />;
+  }
+
+  if (path === '/d1/dna') {
+    return <LearnaDNA onNavigate={(p) => { window.location.href = '/d1/' + p; }} />;
+  }
+
+  if (path === '/d1/outcomes') {
+    return <OutcomeBuilder onNavigate={(p) => { window.location.href = '/d1/' + p; }} />;
+  }
+
+  if (path === '/d1/package') {
+    return <D1Package onNavigate={(p) => { window.location.href = '/d1/' + p; }} />;
   }
 
   if (path.startsWith('/request/')) {
