@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Download, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { useD1 } from '../contexts/D1Context';
-import Layout from '../components/Layout';
 
 interface D1PackageProps {
   onNavigate: (page: string) => void;
@@ -149,7 +148,6 @@ ${currentPackage?.managerSignature ? `Manager: ${currentPackage.managerSignature
 
   if (!currentPackage) {
     return (
-      <Layout currentPage="/d1/package">
         <div className="max-w-4xl mx-auto pb-24">
           <div className="bg-white rounded-lg shadow-lg p-12 border border-navy/10 text-center">
             <AlertCircle className="w-16 h-16 text-navy/40 mx-auto mb-4" />
@@ -165,12 +163,10 @@ ${currentPackage?.managerSignature ? `Manager: ${currentPackage.managerSignature
             </button>
           </div>
         </div>
-      </Layout>
     );
   }
 
   return (
-    <Layout currentPage="/d1/package">
       <div className="max-w-4xl mx-auto pb-24">
         <div className="mb-8">
           <h1 className="text-4xl font-serif text-navy mb-4">D1 Complete Package</h1>
@@ -314,6 +310,5 @@ ${currentPackage?.managerSignature ? `Manager: ${currentPackage.managerSignature
           </div>
         </div>
       )}
-    </Layout>
   );
 }

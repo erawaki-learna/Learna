@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ChevronRight, CheckCircle } from 'lucide-react';
 import { useD1 } from '../contexts/D1Context';
 import { OutcomeData, Intervention } from '../types/d1';
-import Layout from '../components/Layout';
 
 interface OutcomeBuilderProps {
   onNavigate: (page: string) => void;
@@ -83,7 +82,6 @@ export default function OutcomeBuilder({ onNavigate }: OutcomeBuilderProps) {
 
   if (showGrow) {
     return (
-      <Layout currentPage="/d1/outcomes">
         <div className="max-w-4xl mx-auto pb-24">
           <h1 className="text-4xl font-serif text-navy mb-8">Your Outcome Plan</h1>
 
@@ -188,12 +186,10 @@ export default function OutcomeBuilder({ onNavigate }: OutcomeBuilderProps) {
             </button>
           </div>
         </div>
-      </Layout>
     );
   }
 
   return (
-    <Layout currentPage="/d1/outcomes">
       <div className="max-w-3xl mx-auto pb-24">
         <div className="mb-8">
           <h1 className="text-4xl font-serif text-navy mb-2">Outcome Builder</h1>
@@ -285,6 +281,5 @@ export default function OutcomeBuilder({ onNavigate }: OutcomeBuilderProps) {
           </div>
         </div>
       </div>
-    </Layout>
   );
 }

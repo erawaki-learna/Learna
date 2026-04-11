@@ -1,5 +1,4 @@
 import { Lightbulb, Zap, Target } from 'lucide-react';
-import Layout from '../components/Layout';
 
 interface D1HomeProps {
   onNavigate: (page: string) => void;
@@ -7,7 +6,6 @@ interface D1HomeProps {
 
 export default function D1Home({ onNavigate }: D1HomeProps) {
   return (
-    <Layout currentPage="/d1/home">
       <div className="max-w-7xl mx-auto">
         <div className="mb-16">
           <h1 className="text-5xl font-serif text-navy mb-4">D1: Define Outcomes</h1>
@@ -138,6 +136,5 @@ export default function D1Home({ onNavigate }: D1HomeProps) {
           </div>
         </div>
       </div>
-    </Layout>
   );
 }
