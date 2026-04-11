@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { supabase, Request } from '../lib/supabase';
-import Layout from '../components/Layout';
 import { Filter, AlertCircle } from 'lucide-react';
 
 const statuses = [
@@ -74,16 +73,13 @@ export default function AllRequests() {
 
   if (loading) {
     return (
-      <Layout currentPage="/requests">
         <div className="flex items-center justify-center h-64">
           <div className="text-navy/60">Loading...</div>
         </div>
-      </Layout>
     );
   }
 
   return (
-    <Layout currentPage="/requests">
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-serif text-navy mb-2">All Requests</h1>
@@ -207,6 +203,5 @@ export default function AllRequests() {
           )}
         </div>
       </div>
-    </Layout>
   );
 }

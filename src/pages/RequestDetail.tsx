@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, Request } from '../lib/supabase';
-import Layout from '../components/Layout';
 import {
   ArrowLeft,
   CheckCircle,
@@ -136,28 +135,23 @@ export default function RequestDetail() {
 
   if (loading) {
     return (
-      <Layout currentPage="/">
         <div className="flex items-center justify-center h-64">
           <div className="text-navy/60">Loading...</div>
         </div>
-      </Layout>
     );
   }
 
   if (!request) {
     return (
-      <Layout currentPage="/">
         <div className="text-center py-12">
           <p className="text-navy/60">Request not found</p>
         </div>
-      </Layout>
     );
   }
 
   const currentStageIndex = getCurrentStageIndex();
 
   return (
-    <Layout currentPage="/">
       <div className="max-w-5xl mx-auto space-y-6">
 
         <a href="/" className="inline-flex items-center gap-2 text-navy/60 mb-4">
@@ -204,6 +198,5 @@ export default function RequestDetail() {
           </div>
         )}
       </div>
-    </Layout>
   );
 }

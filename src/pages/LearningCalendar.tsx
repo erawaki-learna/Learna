@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -116,7 +115,6 @@ export default function LearningCalendar() {
   const filtered = programmes;
 
   return (
-    <Layout currentPage="/calendar">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
@@ -175,6 +173,5 @@ export default function LearningCalendar() {
         </div>
 
       </div>
-    </Layout>
   );
 }

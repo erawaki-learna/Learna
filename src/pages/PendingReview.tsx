@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { supabase, Request } from '../lib/supabase';
-import Layout from '../components/Layout';
 import { Clock, AlertCircle, ExternalLink } from 'lucide-react';
 
 export default function PendingReview() {
@@ -40,16 +39,13 @@ export default function PendingReview() {
 
   if (loading) {
     return (
-      <Layout currentPage="/pending">
         <div className="flex items-center justify-center h-64">
           <div className="text-navy/60">Loading...</div>
         </div>
-      </Layout>
     );
   }
 
   return (
-    <Layout currentPage="/pending">
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-serif text-navy mb-2">Pending Review</h1>
@@ -173,6 +169,5 @@ export default function PendingReview() {
           )}
         </div>
       </div>
-    </Layout>
   );
 }

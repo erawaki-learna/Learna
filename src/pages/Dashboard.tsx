@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { supabase, Request } from '../lib/supabase';
-import Layout from '../components/Layout';
 import { FileText, Clock, TrendingUp, CheckCircle, AlertCircle, Plus } from 'lucide-react';
 
 export default function Dashboard() {
@@ -90,16 +89,13 @@ const getUrgencyBadge = (urgency?: string) => {
 
   if (loading) {
     return (
-      <Layout currentPage="/">
         <div className="flex items-center justify-center h-64">
           <div className="text-navy/60">Loading...</div>
         </div>
-      </Layout>
     );
   }
 
   return (
-    <Layout currentPage="/">
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -270,6 +266,5 @@ const getUrgencyBadge = (urgency?: string) => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 }

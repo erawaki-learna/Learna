@@ -2,7 +2,6 @@ import { useState } from 'react';
 // Learna v2.1
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import Layout from '../components/Layout';
 import { FileText, Sparkles, CheckCircle } from 'lucide-react';
 import AIAdvisor from './AIAdvisor';
 
@@ -103,16 +102,13 @@ export default function NewRequest() {
   // AI ADVISOR MODE
   if (mode === 'ai') {
     return (
-      <Layout currentPage="/new-request">
         <AIAdvisor onBack={() => setMode('choose')} />
-      </Layout>
     );
   }
 
   // CHOOSE MODE
   if (mode === 'choose') {
     return (
-      <Layout currentPage="/new-request">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-serif text-navy mb-2">Submit New Request</h1>
@@ -161,13 +157,11 @@ export default function NewRequest() {
             </button>
           </div>
         </div>
-      </Layout>
     );
   }
 
   // QUICK FORM MODE
   return (
-    <Layout currentPage="/new-request">
       <div className="max-w-3xl mx-auto">
         <div className="mb-8">
           <button
@@ -334,6 +328,5 @@ export default function NewRequest() {
           </div>
         </form>
       </div>
-    </Layout>
   );
 }
