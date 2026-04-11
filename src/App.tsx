@@ -12,6 +12,7 @@ import D1Home from './pages/D1Home';
 import LearnaDNA from './pages/LearnaDNA';
 import OutcomeBuilder from './pages/OutcomeBuilder';
 import D1Package from './pages/D1Package';
+import SalesDashboard from './pages/SalesDashboard';
 import Layout from './components/Layout';
 
 function App() {
