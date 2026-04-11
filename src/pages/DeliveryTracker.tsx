@@ -635,7 +635,6 @@ export default function DeliveryTracker() {
                   color: view === 'grid' ? '#0A1628' : 'rgba(255,255,255,0.5)',
                 }}
               >
-                <LayoutGrid className="w-3.5 h-3.5" /> Cards
               </button>
               <button
                 onClick={() => { setView('table'); setPage(1); }}
