@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { BarChart3, Users } from 'lucide-react';
 import { useD1 } from '../contexts/D1Context';
-import { useAuth } from '../contexts/AuthContext';
 
 interface LearnaDNAProps {
   onNavigate: (page: string) => void;
@@ -82,7 +81,6 @@ export default function LearnaDNA({ onNavigate }: LearnaDNAProps) {
 
   if (showProfile && mode === 'individual') {
     return (
-      <div>
         <div className="max-w-4xl mx-auto pb-24">
           <h1 className="text-4xl font-serif text-navy mb-2">Your DISA Profile</h1>
           <p className="text-navy/70 mb-8">Based on your 20 observable behaviours assessment</p>
@@ -177,25 +175,24 @@ export default function LearnaDNA({ onNavigate }: LearnaDNAProps) {
             </button>
             <button
               onClick={() => setShowProfile(false)}
-              className="bg-navy/10 hover:bg-navy/20 text-navy font-semibold py-3 px-6 rounded-lg transition-colors"
+              className="bg-navy hover:bg-navy-light text-gold font-semibold py-3 px-6 rounded-lg transition-colors"
             >
               Edit Responses
             </button>
           </div>
         </div>
-      </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto pb-24">
+      <div className="max-w-6xl mx-auto pb-24">
         <div className="flex gap-4 mb-8">
           <button
             onClick={() => setMode('individual')}
             className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
               mode === 'individual'
                 ? 'bg-gold text-navy shadow-lg'
-                : 'bg-white text-navy/70 border border-navy/20 hover:border-gold'
+                : 'bg-white text-navy border border-navy/20 hover:border-gold hover:text-navy'
             }`}
           >
             <BarChart3 className="w-5 h-5" />
@@ -206,7 +203,7 @@ export default function LearnaDNA({ onNavigate }: LearnaDNAProps) {
             className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
               mode === 'team'
                 ? 'bg-gold text-navy shadow-lg'
-                : 'bg-white text-navy/70 border border-navy/20 hover:border-gold'
+                : 'bg-white text-navy border border-navy/20 hover:border-gold hover:text-navy'
             }`}
           >
             <Users className="w-5 h-5" />
@@ -304,7 +301,7 @@ export default function LearnaDNA({ onNavigate }: LearnaDNAProps) {
             <div className="mt-8">
               <button
                 onClick={() => onNavigate('home')}
-                className="bg-navy/10 hover:bg-navy/20 text-navy font-semibold py-3 px-8 rounded-lg transition-colors"
+                className="bg-navy hover:bg-navy-light text-gold font-semibold py-3 px-8 rounded-lg transition-colors"
               >
                 Back to Home
               </button>

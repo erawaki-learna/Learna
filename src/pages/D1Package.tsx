@@ -191,10 +191,10 @@ ${currentPackage?.managerSignature ? `Manager: ${currentPackage.managerSignature
           {sections.map((section, idx) => (
             <div
               key={idx}
-              className={`rounded-lg shadow-lg p-6 border-2 transition-all ${
+              className={`rounded-lg shadow-sm p-6 border-2 transition-all ${
                 section.complete
                   ? 'bg-white border-gold'
-                  : 'bg-navy/5 border-navy/20'
+                  : 'bg-cream border-navy/20'
               }`}
             >
               <div className="flex items-center justify-between mb-4">
@@ -261,7 +261,7 @@ ${currentPackage?.managerSignature ? `Manager: ${currentPackage.managerSignature
         <div className="flex gap-3">
           <button
             onClick={() => onNavigate('home')}
-            className="flex-1 bg-navy/10 hover:bg-navy/20 text-navy font-semibold py-3 rounded-lg transition-colors"
+            className="flex-1 bg-navy hover:bg-navy-light text-gold font-semibold py-3 rounded-lg transition-colors"
           >
             Back to Home
           </button>
@@ -295,7 +295,7 @@ ${currentPackage?.managerSignature ? `Manager: ${currentPackage.managerSignature
             <div className="flex gap-3">
               <button
                 onClick={() => setShowSignatureModal(false)}
-                className="flex-1 bg-navy/10 hover:bg-navy/20 text-navy font-semibold py-2 rounded-lg transition-colors"
+                className="flex-1 bg-navy hover:bg-navy-light text-gold font-semibold py-2 rounded-lg transition-colors"
               >
                 Cancel
               </button>
@@ -310,5 +310,6 @@ ${currentPackage?.managerSignature ? `Manager: ${currentPackage.managerSignature
           </div>
         </div>
       )}
+    </div>
   );
 }

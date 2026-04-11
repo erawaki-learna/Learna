@@ -180,7 +180,7 @@ export default function OutcomeBuilder({ onNavigate }: OutcomeBuilderProps) {
             </button>
             <button
               onClick={() => setShowGrow(false)}
-              className="bg-navy/10 hover:bg-navy/20 text-navy font-semibold py-3 px-6 rounded-lg transition-colors"
+              className="bg-navy hover:bg-navy-light text-gold font-semibold py-3 px-6 rounded-lg transition-colors"
             >
               Edit Outcome
             </button>
@@ -256,7 +256,7 @@ export default function OutcomeBuilder({ onNavigate }: OutcomeBuilderProps) {
             {currentStep > 0 && (
               <button
                 onClick={handleBack}
-                className="bg-navy/10 hover:bg-navy/20 text-navy font-semibold py-3 px-6 rounded-lg transition-colors"
+                className="bg-navy hover:bg-navy-light text-gold font-semibold py-3 px-6 rounded-lg transition-colors"
               >
                 Back
               </button>
