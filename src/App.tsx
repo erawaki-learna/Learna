@@ -14,6 +14,9 @@ import OutcomeBuilder from './pages/OutcomeBuilder';
 import D1Package from './pages/D1Package';
 import SalesDashboard from './pages/SalesDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import IncomingRequests from './pages/IncomingRequests';
+import MyLearningJourney from './pages/MyLearningJourney';
+import RequestProgramme from './pages/RequestProgramme';
 import Layout from './components/Layout';
 
 function App() {
@@ -54,9 +57,9 @@ function App() {
       return profile.role === 'admin' ? <AdminDashboard /> : <SalesDashboard />;
     }
     if (path === '/admin') return <AdminDashboard />;
-    if (path === '/my-requests') return <MyRequests />;
-    if (path === '/new-request') return <NewRequest />;
-    if (path === '/pending') return profile.role === 'admin' ? <PendingReview /> : <MyRequests />;
+    if (path === '/my-requests') return <MyLearningJourney />;
+    if (path === '/new-request') return <RequestProgramme />;
+    if (path === '/pending') return profile.role === 'admin' ? <IncomingRequests /> : <MyRequests />;
     if (path === '/requests') return profile.role === 'admin' ? <AllRequests /> : <MyRequests />;
     if (path === '/calendar') return <LearningCalendar />;
     if (path === '/d1' || path === '/d1/home') return <D1Home onNavigate={navigate} />;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BarChart3, Users } from 'lucide-react';
 import { useD1 } from '../contexts/D1Context';
-import Layout from '../components/Layout';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LearnaDNAProps {
   onNavigate: (page: string) => void;
@@ -82,7 +82,7 @@ export default function LearnaDNA({ onNavigate }: LearnaDNAProps) {
 
   if (showProfile && mode === 'individual') {
     return (
-      <Layout currentPage="/d1/dna">
+      <div>
         <div className="max-w-4xl mx-auto pb-24">
           <h1 className="text-4xl font-serif text-navy mb-2">Your DISA Profile</h1>
           <p className="text-navy/70 mb-8">Based on your 20 observable behaviours assessment</p>
@@ -183,13 +183,12 @@ export default function LearnaDNA({ onNavigate }: LearnaDNAProps) {
             </button>
           </div>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   return (
-    <Layout currentPage="/d1/dna">
-      <div className="max-w-6xl mx-auto pb-24">
+    <div className="max-w-6xl mx-auto pb-24">
         <div className="flex gap-4 mb-8">
           <button
             onClick={() => setMode('individual')}
@@ -313,6 +312,5 @@ export default function LearnaDNA({ onNavigate }: LearnaDNAProps) {
           </div>
         )}
       </div>
-    </Layout>
   );
 }
