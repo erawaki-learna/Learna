@@ -81,6 +81,7 @@ export default function LearnaDNA({ onNavigate }: LearnaDNAProps) {
 
   if (showProfile && mode === 'individual') {
     return (
+      <div className="min-h-screen" style={{ background: '#F7F5F0' }}>
         <div className="max-w-4xl mx-auto pb-24">
           <h1 className="text-4xl font-serif text-navy mb-2">Your DISA Profile</h1>
           <p className="text-navy/70 mb-8">Based on your 20 observable behaviours assessment</p>
@@ -181,10 +182,12 @@ export default function LearnaDNA({ onNavigate }: LearnaDNAProps) {
             </button>
           </div>
         </div>
+      </div>
     );
   }
 
   return (
+    <div className="min-h-screen" style={{ background: '#F7F5F0' }}>
       <div className="max-w-6xl mx-auto pb-24">
         <div className="flex gap-4 mb-8">
           <button
@@ -309,5 +312,6 @@ export default function LearnaDNA({ onNavigate }: LearnaDNAProps) {
           </div>
         )}
       </div>
+    </div>
   );
 }

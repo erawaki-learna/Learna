@@ -82,6 +82,7 @@ export default function OutcomeBuilder({ onNavigate }: OutcomeBuilderProps) {
 
   if (showGrow) {
     return (
+      <div className="min-h-screen" style={{ background: '#F7F5F0' }}>
         <div className="max-w-4xl mx-auto pb-24">
           <h1 className="text-4xl font-serif text-navy mb-8">Your Outcome Plan</h1>
 
@@ -186,10 +187,12 @@ export default function OutcomeBuilder({ onNavigate }: OutcomeBuilderProps) {
             </button>
           </div>
         </div>
+      </div>
     );
   }
 
   return (
+    <div className="min-h-screen" style={{ background: '#F7F5F0' }}>
       <div className="max-w-3xl mx-auto pb-24">
         <div className="mb-8">
           <h1 className="text-4xl font-serif text-navy mb-2">Outcome Builder</h1>
@@ -281,5 +284,6 @@ export default function OutcomeBuilder({ onNavigate }: OutcomeBuilderProps) {
           </div>
         </div>
       </div>
+    </div>
   );
 }

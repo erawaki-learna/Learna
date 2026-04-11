@@ -6,6 +6,7 @@ interface D1HomeProps {
 
 export default function D1Home({ onNavigate }: D1HomeProps) {
   return (
+    <div className="min-h-screen" style={{ background: '#F7F5F0' }}>
       <div className="max-w-7xl mx-auto">
         <div className="mb-16">
           <h1 className="text-5xl font-serif text-navy mb-4">D1: Define Outcomes</h1>
@@ -136,5 +137,6 @@ export default function D1Home({ onNavigate }: D1HomeProps) {
           </div>
         </div>
       </div>
+    </div>
   );
 }

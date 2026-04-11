@@ -1,138 +1,312 @@
 import { useState } from 'react';
+import { Download, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { useD1 } from '../contexts/D1Context';
 
 interface D1PackageProps {
   onNavigate: (page: string) => void;
 }
 
-const SECTIONS = [
-  { id: 'needs', title: 'AI Needs Analysis', icon: '🧠', status: 'complete' },
-  { id: 'disa', title: 'LearnaDNA Profile', icon: '🧬', status: 'complete' },
-  { id: 'outcome', title: 'SMART + GROW Outcome', icon: '📐', status: 'complete' },
-  { id: 'commitment', title: 'Manager Commitment', icon: '✍️', status: 'pending' },
-];
-
 export default function D1Package({ onNavigate }: D1PackageProps) {
-  const { needsAssessment } = useD1();
-  const [committed, setCommitted] = useState(false);
+  const { currentPackage, needsAssessment, disaProfile, outcomeData, setManagerSignature } = useD1();
   const [managerName, setManagerName] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [showSignatureModal, setShowSignatureModal] = useState(false);
+  const [hasSignedOff, setHasSignedOff] = useState(false);
 
   const handleSignOff = () => {
-    if (managerName.trim()) {
-      setCommitted(true);
-      setShowModal(false);
-    }
+    if (!managerName.trim()) return;
+    setManagerSignature(managerName);
+    setHasSignedOff(true);
+    setShowSignatureModal(false);
   };
 
-  return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-3xl font-serif text-navy mb-2">D1 Package</h1>
-        <p className="text-navy/60">Complete submission ready for L&D</p>
-      </div>
+  const handleDownloadPDF = () => {
+    const content = `
+LEARNA D1 PACKAGE - COMPLETE LEARNING PLAN
+Generated: ${new Date().toLocaleDateString()}
 
-      {/* Package Header */}
-      <div className="bg-navy rounded-xl p-6 text-white">
-        <div className="flex justify-between items-start">
-          <div>
-            <p className="text-gold text-xs font-bold uppercase tracking-widest mb-2">D1 Package Reference</p>
-            <h2 className="text-2xl font-serif mb-1">QR-AI-2026-0021</h2>
-            <p className="text-white/60 text-sm">Corporate Sales — Closing & Value Articulation</p>
+=== BUSINESS CONTEXT & NEEDS ===
+${needsAssessment?.businessContext || 'Not provided'}
+
+Current Challenge: ${needsAssessment?.currentChallenge || 'Not provided'}
+Desired Outcome: ${needsAssessment?.desiredOutcome || 'Not provided'}
+Timeframe: ${needsAssessment?.timeframe || 'Not provided'}
+Success Metrics: ${needsAssessment?.successMetrics || 'Not provided'}
+
+=== CAPABILITY PROFILE (DISA) ===
+Drive: ${disaProfile?.drive || 0}/5
+Influence: ${disaProfile?.influence || 0}/5
+Stability: ${disaProfile?.stability || 0}/5
+Accuracy: ${disaProfile?.accuracy || 0}/5
+
+=== OUTCOME STATEMENT ===
+${outcomeData?.smartStatement || 'Not provided'}
+
+=== INTERVENTIONS ===
+${outcomeData?.interventions?.map((i) => `${i.rank}. ${i.title}\n${i.description}\n`).join('\n') || 'Not provided'}
+
+=== MANAGER SIGN-OFF ===
+${currentPackage?.managerSignature ? `Manager: ${currentPackage.managerSignature.name}\nDate: ${new Date(currentPackage.managerSignature.timestamp).toLocaleDateString()}` : 'Not signed off'}
+    `;
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `D1-Package-${new Date().getTime()}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const completionPercentage = Math.round(
+    ((needsAssessment ? 25 : 0) +
+      (disaProfile && disaProfile.drive > 0 ? 25 : 0) +
+      (outcomeData?.context ? 25 : 0) +
+      (hasSignedOff ? 25 : 0)) /
+      1
+  );
+
+  const sections = [
+    {
+      title: 'AI Needs Assessment',
+      icon: '📋',
+      complete: !!needsAssessment,
+      content: needsAssessment ? (
+        <div className="space-y-2 text-sm">
+          <p>
+            <span className="font-semibold">Challenge:</span> {needsAssessment.currentChallenge}
+          </p>
+          <p>
+            <span className="font-semibold">Outcome:</span> {needsAssessment.desiredOutcome}
+          </p>
+          <p>
+            <span className="font-semibold">Timeframe:</span> {needsAssessment.timeframe}
+          </p>
+        </div>
+      ) : null,
+    },
+    {
+      title: 'LearnaDNA Profile',
+      icon: '🧬',
+      complete: !!disaProfile && disaProfile.drive > 0,
+      content: disaProfile && disaProfile.drive > 0 ? (
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between items-center">
+            <span>Drive</span>
+            <span className="font-bold text-gold">{disaProfile.drive}/5</span>
           </div>
-          <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${committed ? 'bg-gold text-navy' : 'bg-white/10 text-white/60'}`}>
-            {committed ? '✓ Ready to Submit' : '⏳ Pending Signature'}
-          </span>
+          <div className="flex justify-between items-center">
+            <span>Influence</span>
+            <span className="font-bold text-gold">{disaProfile.influence}/5</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Stability</span>
+            <span className="font-bold text-gold">{disaProfile.stability}/5</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Accuracy</span>
+            <span className="font-bold text-gold">{disaProfile.accuracy}/5</span>
+          </div>
+        </div>
+      ) : null,
+    },
+    {
+      title: 'Outcome Plan',
+      icon: '🎯',
+      complete: !!outcomeData?.context,
+      content: outcomeData?.smartStatement ? (
+        <div className="space-y-2 text-sm">
+          <p className="text-navy/80 italic">{outcomeData.smartStatement}</p>
+          {outcomeData.interventions && outcomeData.interventions.length > 0 && (
+            <div>
+              <p className="font-semibold">Key Interventions:</p>
+              <ul className="list-disc list-inside text-xs">
+                {outcomeData.interventions.slice(0, 2).map((i) => (
+                  <li key={i.rank}>{i.title}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ) : null,
+    },
+    {
+      title: 'Manager Sign-Off',
+      icon: '✍️',
+      complete: hasSignedOff,
+      content: hasSignedOff ? (
+        <div className="space-y-2 text-sm">
+          <p>
+            <span className="font-semibold">Manager:</span> {currentPackage?.managerSignature?.name}
+          </p>
+          <p className="text-navy/70">
+            {new Date(currentPackage?.managerSignature?.timestamp || '').toLocaleDateString()}
+          </p>
+        </div>
+      ) : null,
+    },
+  ];
+
+  if (!currentPackage) {
+    return (
+      <div className="min-h-screen" style={{ background: '#F7F5F0' }}>
+        <div className="max-w-4xl mx-auto pb-24">
+          <div className="bg-white rounded-lg shadow-lg p-12 border border-navy/10 text-center">
+            <AlertCircle className="w-16 h-16 text-navy/40 mx-auto mb-4" />
+            <h2 className="text-2xl font-serif text-navy mb-2">D1 Package Empty</h2>
+            <p className="text-navy/70 mb-6">
+              Complete the three assessment tools to build your D1 Package
+            </p>
+            <button
+              onClick={() => onNavigate('home')}
+              className="bg-gold hover:bg-gold/90 text-navy font-semibold py-3 px-8 rounded-lg transition-colors"
+            >
+              Start D1 Process
+            </button>
+          </div>
         </div>
       </div>
+    );
+  }
 
-      {/* Section Status */}
-      <div className="grid grid-cols-2 gap-4">
-        {SECTIONS.map(s => (
-          <div key={s.id} className="bg-white rounded-xl p-4 border border-navy/10 flex items-center gap-3">
-            <span className="text-2xl">{s.icon}</span>
-            <div>
-              <p className="text-sm font-semibold text-navy">{s.title}</p>
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                s.id === 'commitment' && committed ? 'bg-green-100 text-green-700' :
-                s.id === 'commitment' ? 'bg-red-100 text-red-600' :
-                'bg-green-100 text-green-700'
-              }`}>
-                {s.id === 'commitment' ? (committed ? 'Signed ✓' : 'Pending') : 'Complete'}
-              </span>
+  return (
+    <div className="min-h-screen" style={{ background: '#F7F5F0' }}>
+      <div className="max-w-4xl mx-auto pb-24">
+        <div className="mb-8">
+          <h1 className="text-4xl font-serif text-navy mb-4">D1 Complete Package</h1>
+
+          <div className="bg-white rounded-lg shadow-lg p-6 border border-navy/10 mb-8">
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-semibold text-navy">Package Completion</span>
+                <span className="text-2xl font-bold text-gold">{completionPercentage}%</span>
+              </div>
+              <div className="w-full h-3 bg-navy/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gold transition-all duration-300"
+                  style={{ width: `${completionPercentage}%` }}
+                />
+              </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
 
-      {/* Summary */}
-      <div className="bg-white rounded-xl border border-navy/10 p-6">
-        <h3 className="font-serif font-bold text-navy text-lg mb-4">Package Summary</h3>
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            ['Business Problem', needsAssessment?.currentChallenge || 'Corporate sales closing gaps'],
-            ['Target Audience', '8 Corporate Sales Executives'],
-            ['Root Cause', 'Skill gap — value-based selling'],
-            ['Business Impact', 'LKR 12M pipeline at risk'],
-            ['SMART Outcome', '35% close rate by Apr 30, 2026'],
-            ['Urgency', 'Within 2 weeks'],
-            ['Recommendation', 'Workshop + Coaching + Role Play'],
-            ['Priority', '🔴 High'],
-          ].map(([k, v]) => (
-            <div key={k} className="bg-cream rounded-lg p-3">
-              <p className="text-[10px] font-bold text-navy/40 uppercase tracking-wider mb-1">{k}</p>
-              <p className="text-sm font-medium text-navy">{v}</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {sections.map((section, idx) => (
+            <div
+              key={idx}
+              className={`rounded-lg shadow-sm p-6 border-2 transition-all ${
+                section.complete
+                  ? 'bg-white border-gold'
+                  : 'bg-cream border-navy/20'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{section.icon}</span>
+                  <h3 className="text-lg font-serif text-navy">{section.title}</h3>
+                </div>
+                {section.complete && <CheckCircle className="w-5 h-5 text-gold" />}
+              </div>
+              {section.content ? (
+                section.content
+              ) : (
+                <p className="text-sm text-navy/50 italic">Not completed yet</p>
+              )}
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Manager Commitment */}
-      {!committed ? (
-        <div className="bg-white rounded-xl border-2 border-gold/40 p-6">
-          <h3 className="font-serif font-bold text-navy text-lg mb-2">Manager Commitment Declaration</h3>
-          <p className="text-navy/60 text-sm mb-4">
-            By signing, I confirm I will brief my team before the programme and conduct a 30-day follow-up review.
+        <div className="bg-gold/10 rounded-lg p-8 border border-gold mb-8">
+          <h3 className="text-2xl font-serif text-navy mb-4">Manager Commitment</h3>
+          <p className="text-navy/70 mb-6">
+            Manager sign-off confirms commitment to support the implementation of this learning and
+            development plan.
           </p>
-          <button onClick={() => setShowModal(true)}
-            className="w-full bg-gold text-navy font-bold py-3 rounded-lg hover:bg-gold/90 transition-colors">
-            ✍️ Sign & Confirm Manager Commitment
-          </button>
+          {!hasSignedOff && (
+            <button
+              onClick={() => setShowSignatureModal(true)}
+              className="flex items-center gap-2 bg-gold hover:bg-gold/90 text-navy font-semibold py-3 px-6 rounded-lg transition-colors"
+            >
+              <span>Add Manager Sign-Off</span>
+            </button>
+          )}
+          {hasSignedOff && (
+            <div className="p-4 bg-white rounded-lg border border-gold">
+              <p className="text-sm text-navy/70">Signed by:</p>
+              <p className="font-semibold text-navy text-lg">
+                {currentPackage.managerSignature?.name}
+              </p>
+              <p className="text-sm text-navy/60">
+                {new Date(currentPackage.managerSignature?.timestamp || '').toLocaleString()}
+              </p>
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="bg-green-50 rounded-xl border border-green-200 p-4 flex items-center gap-3">
-          <span className="text-2xl">✅</span>
-          <div>
-            <p className="font-bold text-green-800">Commitment Signed — {managerName}</p>
-            <p className="text-green-600 text-sm">{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-          </div>
-        </div>
-      )}
 
-      {/* Actions */}
-      <div className="flex gap-3">
-        <button className="flex-1 bg-navy text-gold font-bold py-3 rounded-lg hover:bg-navy/90 transition-colors">
-          📤 Submit to L&D Pipeline
-        </button>
-        <button className="bg-cream text-navy border border-navy/20 font-semibold px-6 py-3 rounded-lg hover:bg-navy/5 transition-colors">
-          📄 Download PDF
-        </button>
+        <div className="flex flex-col gap-3 mb-8">
+          <button
+            onClick={handleDownloadPDF}
+            className="flex items-center justify-center gap-2 bg-navy hover:bg-navy/90 text-white font-semibold py-3 rounded-lg transition-colors"
+          >
+            <Download className="w-5 h-5" />
+            Download Package
+          </button>
+          {completionPercentage === 100 && (
+            <button
+              className="flex items-center justify-center gap-2 bg-gold hover:bg-gold/90 text-navy font-semibold py-3 rounded-lg transition-colors"
+            >
+              <Send className="w-5 h-5" />
+              Submit to L&D Team
+            </button>
+          )}
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            onClick={() => onNavigate('home')}
+            className="flex-1 bg-navy hover:bg-navy-light text-gold font-semibold py-3 rounded-lg transition-colors"
+          >
+            Back to Home
+          </button>
+          {completionPercentage < 100 && (
+            <button
+              onClick={() => onNavigate('ai-advisor')}
+              className="flex-1 bg-gold hover:bg-gold/90 text-navy font-semibold py-3 rounded-lg transition-colors"
+            >
+              Complete Assessment
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Signature Modal */}
-      {showModal && (
+      {showSignatureModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full">
+          <div className="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full">
             <h3 className="text-2xl font-serif text-navy mb-4">Manager Sign-Off</h3>
-            <p className="text-navy/60 mb-4">Enter your name to confirm commitment.</p>
-            <input type="text" value={managerName} onChange={e => setManagerName(e.target.value)}
-              placeholder="Your full name" autoFocus
-              className="w-full px-4 py-2 border border-navy/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold mb-4" />
+            <p className="text-navy/70 mb-6">
+              Enter your name to confirm commitment to this learning plan.
+            </p>
+            <input
+              type="text"
+              value={managerName}
+              onChange={(e) => setManagerName(e.target.value)}
+              placeholder="Manager Name"
+              className="w-full px-4 py-2 border border-navy/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold mb-4"
+              onKeyPress={(e) => e.key === 'Enter' && handleSignOff()}
+              autoFocus
+            />
             <div className="flex gap-3">
-              <button onClick={() => setShowModal(false)}
-                className="flex-1 bg-navy/10 text-navy font-semibold py-2 rounded-lg">Cancel</button>
-              <button onClick={handleSignOff} disabled={!managerName.trim()}
-                className="flex-1 bg-gold disabled:opacity-50 text-navy font-bold py-2 rounded-lg">
+              <button
+                onClick={() => setShowSignatureModal(false)}
+                className="flex-1 bg-navy hover:bg-navy-light text-gold font-semibold py-2 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSignOff}
+                disabled={!managerName.trim()}
+                className="flex-1 bg-gold hover:bg-gold/90 disabled:opacity-50 text-navy font-semibold py-2 rounded-lg transition-colors"
+              >
                 Confirm Sign-Off
               </button>
             </div>
