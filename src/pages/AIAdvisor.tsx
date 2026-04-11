@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
-const AI_URL = 'https://api.anthropic.com/v1/messages'
+const GEMINI_API_KEY = 'AIzaSyA4Cu98sryXB7BK_8s-IS4gNpyYjYWVrGc';
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 const SYSTEM_PROMPT = `You are the Learna AI Learning Needs Advisor for HNB Assurance PLC, a life insurance company in Sri Lanka.
 
@@ -29,7 +30,7 @@ GUIDE THROUGH THESE AREAS (in order):
 IMPORTANT RULES:
 - If the problem is NOT a training issue (e.g., system problem, policy issue, resource constraint), politely explain why and suggest who they should contact instead
 - If you identify the root cause as something other than a knowledge/skill gap, say so honestly
-- CRITICAL INSTRUCTION: Once you have gathered answers to all 7 areas, you MUST end your final message with this EXACT block — no exceptions, no variations:
+- After gathering ALL information, generate a STRUCTURED SUMMARY in this exact format:
 
 ---SUMMARY---
 BUSINESS PROBLEM: [clear statement]
@@ -41,8 +42,6 @@ URGENCY: [within 2 weeks / within 1 month / within 3 months / flexible]
 L&D RECOMMENDATION: [what type of intervention would work best]
 MANAGER COMMITMENT: [confirmed / not confirmed]
 ---END SUMMARY---
-
-You MUST include this block verbatim at the end of your closing message. Do not summarise in prose instead. Do not skip it. The system depends on this exact format to process the request.
 
 Start by greeting them warmly and asking what challenge they're facing with their team.`;
 
@@ -92,13 +91,13 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
       setSpeechSupported(true);
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.interimResults = true;
       recognition.lang = 'en-US';
 
-       recognition.onresult = (event: any) => {
+      recognition.onresult = (event: any) => {
         let finalTranscript = '';
         let interimTranscript = '';
-        for (let i = 0; i < event.results.length; i++) {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
             finalTranscript += transcript;
@@ -107,9 +106,13 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
           }
         }
         if (finalTranscript) {
-          setInput(finalTranscript);
-        } else {
-          setInput(interimTranscript);
+          setInput(prev => prev + finalTranscript);
+        } else if (interimTranscript) {
+          // Show interim results in a subtle way
+          setInput(prev => {
+            const base = prev.replace(/\[listening\.\.\.\].*$/, '');
+            return base + interimTranscript;
+          });
         }
       };
 
@@ -163,27 +166,17 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
         parts: [{ text: m.content }]
       }));
 
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch(GEMINI_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': import.meta.env.VITE_ANTHROPIC_KEY,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 1000,
-          system: SYSTEM_PROMPT,
-          messages: newMessages.map(m => ({
-            role: m.role === 'assistant' ? 'assistant' : 'user',
-            content: m.content
-          })),
+          systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents: apiMessages,
         }),
       });
 
       const data = await response.json();
-      const text = data.content?.[0]?.text ||
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text ||
         "I'm having trouble connecting right now. Could you please repeat that?";
 
       const assistantMsg: Message = { role: 'assistant', content: text };
@@ -204,22 +197,20 @@ export default function AIAdvisor({ onBack }: { onBack: () => void }) {
   };
 
   const handleSubmitToLD = async () => {
-    if (!summary) return;
-    const { data: { user: authUser } } = await supabase.auth.getUser();
-    if (!authUser) return;
+    if (!summary || !user) return;
 
-const { data: countData, error: countError } = await supabase
-  .from('requests')
-  .select('id') as any;
-
-if (countError) throw countError;
+    const { data: countData } = await supabase
+      .from('requests')
+      .select('id', { count: 'exact' });
+    const seq = String((countData?.length || 0) + 1).padStart(3, '0');
+    const requestId = `QR-AI-2026-${seq}`;
 
     const { error } = await supabase.from('requests').insert({
-      user_id: authUser.id,
+      user_id: user.id,
       request_id: requestId,
-      requestor_name: profile?.full_name || authUser.email || '',
+      requestor_name: profile?.full_name || '',
       division: profile?.division || 'Not specified',
-      contact: profile?.email || authUser.email || '',
+      contact: profile?.email || '',
       business_problem: summary['BUSINESS PROBLEM'] || '',
       audience: summary['TARGET AUDIENCE'] || '',
       urgency: summary['URGENCY'] || 'Within 1 month',
