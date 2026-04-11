@@ -1,188 +1,396 @@
 import { useState, ReactNode } from 'react';
 import {
-  LayoutDashboard, FileText, Calendar, Plus, LogOut, Menu,
-  MessageSquare, BookOpen, Target, Inbox, ClipboardList,
-  BarChart3, Users, Layers, Activity, X, Dna,
+  LayoutDashboard,
+  Inbox,
+  FileText,
+  Calendar,
+  Layers,
+  Activity,
+  TrendingUp,
+  BarChart2,
+  Award,
+  Download,
+  Dna,
+  Settings,
+  Plus,
+  Bot,
+  BookOpen,
+  Users,
+  UserPlus,
+  HelpCircle,
+  User,
+  LogOut,
+  Bell,
+  Menu,
+  X,
+  ClipboardList,
+  ChevronRight,
 } from 'lucide-react';
+import NotificationsDrawer from './NotificationsDrawer';
 
-interface LayoutProps {
+export interface LayoutProps {
   children: ReactNode;
   currentPage: string;
   userRole: 'admin' | 'requestor';
   userName?: string;
-  onNavigate: (page: string) => void;
+  onNavigate: (path: string) => void;
   onSignOut: () => void;
 }
 
-const adminNavItems = [
-  { name: 'L&D Dashboard', icon: LayoutDashboard, path: '/admin' },
-  { name: 'Incoming Requests', icon: Inbox, path: '/pending' },
-  { name: 'All Requests', icon: FileText, path: '/requests' },
-  { name: 'Learning Calendar', icon: Calendar, path: '/calendar' },
-  { name: 'Programme Design', icon: Layers, path: '/d2' },
-  { name: 'Delivery Tracker', icon: ClipboardList, path: '/d3' },
-  { name: 'Transfer Monitor', icon: Activity, path: '/d4' },
-  { name: 'Impact Reports', icon: BarChart3, path: '/d5' },
-  { name: 'LearnaDNA Profiles', icon: Users, path: '/dna' },
-];
-
-const requestorNavItems = [
-  { name: 'My Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-  { name: 'Request a Programme', icon: Plus, path: '/new-request' },
-  { name: 'Talk to Learning AI', icon: MessageSquare, path: '/ai-advisor' },
-  { name: 'My Learning Journey', icon: BookOpen, path: '/my-requests' },
-  { name: 'My Team Profile', icon: Dna, path: '/dna' },
-  { name: 'Learning Calendar', icon: Calendar, path: '/calendar' },
-  { name: 'Define My Outcome', icon: Target, path: '/d1' },
-];
-
-const getInitials = (name?: string) => {
-  if (!name) return 'U';
-  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-};
-
-interface NavItemProps {
-  item: { name: string; icon: React.ElementType; path: string };
-  isActive: boolean;
-  onClick: () => void;
+interface NavItem {
+  label: string;
+  icon: typeof LayoutDashboard;
+  path: string;
 }
 
-function NavItem({ item, isActive, onClick }: NavItemProps) {
-  const Icon = item.icon;
+const ADMIN_NAV: NavItem[] = [
+  { label: 'L&D Dashboard', icon: LayoutDashboard, path: '/' },
+  { label: 'Incoming Requests', icon: Inbox, path: '/incoming-requests' },
+  { label: 'All Requests', icon: FileText, path: '/requests' },
+  { label: 'Learning Calendar', icon: Calendar, path: '/calendar' },
+  { label: 'Programme Design', icon: Layers, path: '/programme-design' },
+  { label: 'Delivery Tracker', icon: ClipboardList, path: '/delivery-tracker' },
+  { label: 'Transfer Monitor', icon: Activity, path: '/transfer-monitor' },
+  { label: 'Impact Reports', icon: TrendingUp, path: '/impact-reports' },
+  { label: 'Learning Analytics', icon: BarChart2, path: '/learning-analytics' },
+  { label: 'Certification Log', icon: Award, path: '/certification-log' },
+  { label: 'Reports & Export', icon: Download, path: '/reports-export' },
+  { label: 'LearnaDNA Profiles', icon: Dna, path: '/learna-dna' },
+  { label: 'Admin Settings', icon: Settings, path: '/admin-settings' },
+];
+
+const REQUESTOR_NAV: NavItem[] = [
+  { label: 'My Dashboard', icon: LayoutDashboard, path: '/' },
+  { label: 'Request a Programme', icon: Plus, path: '/request-programme' },
+  { label: 'AI Learning Advisor', icon: Bot, path: '/d1/ai-advisor' },
+  { label: 'My Learning Journey', icon: BookOpen, path: '/my-learning-journey' },
+  { label: 'My Team', icon: Users, path: '/team-view' },
+  { label: 'Nominate Staff', icon: UserPlus, path: '/nominate-staff' },
+  { label: 'Learning Calendar', icon: Calendar, path: '/calendar' },
+  { label: 'Help Center', icon: HelpCircle, path: '/help-center' },
+  { label: 'Profile Settings', icon: User, path: '/profile-settings' },
+];
+
+const MOCK_NOTIF_COUNT = 3;
+
+function getInitials(name?: string) {
+  if (!name) return 'U';
+  return name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function SidebarNav({
+  nav,
+  currentPage,
+  onNavigate,
+  isAdmin,
+}: {
+  nav: NavItem[];
+  currentPage: string;
+  onNavigate: (p: string) => void;
+  isAdmin: boolean;
+}) {
   return (
-    <li>
-      <button
-        onClick={onClick}
-        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 text-sm text-left"
-        style={isActive
-          ? { backgroundColor: '#C9A227', color: '#0A1628', fontWeight: 500 }
-          : { color: 'rgba(255,255,255,0.7)' }
-        }
-        onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,255,255,0.1)'; }}
-        onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; }}
+    <nav className="flex-1 overflow-y-auto px-3 py-4">
+      <p
+        className="text-[10px] font-bold uppercase tracking-widest px-3 mb-3"
+        style={{ color: 'rgba(201,162,39,0.45)' }}
       >
-        <Icon className="w-4 h-4 flex-shrink-0" />
-        <span>{item.name}</span>
-      </button>
-    </li>
+        {isAdmin ? 'Administration' : 'Learning Hub'}
+      </p>
+      <ul className="space-y-0.5">
+        {nav.map((item) => {
+          const Icon = item.icon;
+          const active = currentPage === item.path;
+          return (
+            <li key={item.path}>
+              <button
+                onClick={() => onNavigate(item.path)}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-150 text-left"
+                style={
+                  active
+                    ? { backgroundColor: '#C9A227', color: '#0A1628', fontWeight: 600 }
+                    : { color: 'rgba(255,255,255,0.65)', fontWeight: 400 }
+                }
+                onMouseEnter={(e) => {
+                  if (!active)
+                    (e.currentTarget as HTMLElement).style.backgroundColor =
+                      'rgba(255,255,255,0.07)';
+                }}
+                onMouseLeave={(e) => {
+                  if (!active)
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                }}
+              >
+                <Icon
+                  className="w-4 h-4 flex-shrink-0"
+                  style={active ? { color: '#0A1628' } : { color: 'rgba(255,255,255,0.5)' }}
+                />
+                <span className="flex-1 leading-snug">{item.label}</span>
+                {active && (
+                  <ChevronRight
+                    className="w-3 h-3 flex-shrink-0 opacity-60"
+                    style={{ color: '#0A1628' }}
+                  />
+                )}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 }
 
-export default function Layout({ children, currentPage, userRole, userName, onNavigate, onSignOut }: LayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const isAdmin = userRole === 'admin';
-  const navigation = isAdmin ? adminNavItems : requestorNavItems;
-
-  function SidebarContent() {
-    return (
-      <div className="flex flex-col h-full">
-        <div className="p-5 border-b border-white/10 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <img src="/learna-logo-v2.png" alt="Learna" className="w-10 h-10 object-contain" />
-            <div>
-              <h1 className="text-lg font-serif leading-tight" style={{ color: '#C9A227' }}>LEARNA</h1>
-              <p className="text-xs" style={{ color: 'rgba(201,162,39,0.6)' }}>HNB Assurance PLC</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-3 overflow-y-auto">
-          <p className="text-xs font-medium uppercase tracking-widest px-3 mb-3" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            {isAdmin ? 'Administration' : 'Learning Hub'}
-          </p>
-          <ul className="space-y-0.5">
-            {navigation.map((item) => (
-              <NavItem
-                key={item.path}
-                item={item}
-                isActive={currentPage === item.path}
-                onClick={() => { setSidebarOpen(false); onNavigate(item.path); }}
-              />
-            ))}
-          </ul>
-        </nav>
-
-        <div className="p-3 border-t border-white/10 flex-shrink-0">
-          <div className="flex items-center gap-3 px-3 py-2.5 mb-1">
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0"
-              style={{ backgroundColor: '#C9A227', color: '#0A1628' }}
-            >
-              {getInitials(userName)}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-white text-sm font-medium truncate">{userName || 'User'}</p>
-              <p className="text-xs truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                {isAdmin ? 'Administrator' : 'Sales Leader'}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={onSignOut}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 text-sm"
-            style={{ color: 'rgba(255,255,255,0.7)' }}
-            onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+function SidebarInner({
+  nav,
+  currentPage,
+  isAdmin,
+  userName,
+  userRole,
+  onNavigate,
+  onSignOut,
+}: {
+  nav: NavItem[];
+  currentPage: string;
+  isAdmin: boolean;
+  userName?: string;
+  userRole: 'admin' | 'requestor';
+  onNavigate: (p: string) => void;
+  onSignOut: () => void;
+}) {
+  return (
+    <div className="flex flex-col h-full">
+      <div
+        className="px-5 py-5 flex-shrink-0 border-b"
+        style={{ borderColor: 'rgba(255,255,255,0.07)' }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: '#C9A227' }}
           >
-            <LogOut className="w-4 h-4" />
-            <span>Sign Out</span>
-          </button>
+            <span
+              className="text-sm font-bold"
+              style={{ color: '#0A1628', fontFamily: 'Georgia, serif' }}
+            >
+              L
+            </span>
+          </div>
+          <div>
+            <h1
+              className="text-base font-bold tracking-wide leading-tight"
+              style={{ color: '#C9A227', fontFamily: 'Georgia, serif' }}
+            >
+              LEARNA
+            </h1>
+            <p
+              className="text-[10px] font-medium leading-tight"
+              style={{ color: 'rgba(201,162,39,0.5)' }}
+            >
+              HNB Assurance PLC
+            </p>
+          </div>
         </div>
       </div>
-    );
+
+      <SidebarNav
+        nav={nav}
+        currentPage={currentPage}
+        onNavigate={onNavigate}
+        isAdmin={isAdmin}
+      />
+
+      <div
+        className="px-3 pb-4 pt-3 flex-shrink-0 border-t"
+        style={{ borderColor: 'rgba(255,255,255,0.07)' }}
+      >
+        <div
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1"
+          style={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+        >
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+            style={{ backgroundColor: '#C9A227', color: '#0A1628' }}
+          >
+            {getInitials(userName)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold truncate" style={{ color: 'white' }}>
+              {userName || 'User'}
+            </p>
+            <p
+              className="text-[11px] truncate capitalize"
+              style={{ color: 'rgba(255,255,255,0.4)' }}
+            >
+              {userRole === 'admin' ? 'Administrator' : 'Sales Leader'}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={onSignOut}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all"
+          style={{ color: 'rgba(255,255,255,0.5)' }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = 'rgba(255,255,255,0.07)';
+            (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.85)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+            (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.5)';
+          }}
+        >
+          <LogOut className="w-4 h-4 flex-shrink-0" />
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default function Layout({
+  children,
+  currentPage,
+  userRole,
+  userName,
+  onNavigate,
+  onSignOut,
+}: LayoutProps) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+
+  const isAdmin = userRole === 'admin';
+  const nav = isAdmin ? ADMIN_NAV : REQUESTOR_NAV;
+
+  function handleNavigate(path: string) {
+    setMobileOpen(false);
+    onNavigate(path);
   }
 
   return (
-    <div className="min-h-screen flex" style={{ backgroundColor: '#F7F5F0' }}>
-      <aside className="hidden lg:flex lg:w-64 flex-col fixed inset-y-0 left-0 z-30" style={{ backgroundColor: '#0A1628' }}>
-        <SidebarContent />
+    <div
+      className="min-h-screen flex"
+      style={{ backgroundColor: '#F7F5F0', fontFamily: 'Inter, sans-serif' }}
+    >
+      <aside
+        className="hidden lg:flex w-64 flex-col fixed inset-y-0 left-0 z-30"
+        style={{ backgroundColor: '#0A1628' }}
+      >
+        <SidebarInner
+          nav={nav}
+          currentPage={currentPage}
+          isAdmin={isAdmin}
+          userName={userName}
+          userRole={userRole}
+          onNavigate={handleNavigate}
+          onSignOut={onSignOut}
+        />
       </aside>
 
-      {sidebarOpen && (
+      {mobileOpen && (
         <>
           <div
             className="fixed inset-0 z-40 lg:hidden"
-            style={{ backgroundColor: 'rgba(10,22,40,0.6)' }}
-            onClick={() => setSidebarOpen(false)}
+            style={{
+              backgroundColor: 'rgba(10,22,40,0.55)',
+              backdropFilter: 'blur(2px)',
+            }}
+            onClick={() => setMobileOpen(false)}
           />
-          <aside className="fixed inset-y-0 left-0 w-64 flex flex-col z-50 lg:hidden" style={{ backgroundColor: '#0A1628' }}>
+          <aside
+            className="fixed inset-y-0 left-0 w-64 flex flex-col z-50 lg:hidden"
+            style={{ backgroundColor: '#0A1628' }}
+          >
             <button
-              onClick={() => setSidebarOpen(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-lg"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
+              onClick={() => setMobileOpen(false)}
+              className="absolute top-4 right-4 w-7 h-7 rounded-lg flex items-center justify-center transition-all"
+              style={{
+                color: 'rgba(255,255,255,0.4)',
+                backgroundColor: 'rgba(255,255,255,0.07)',
+              }}
             >
               <X className="w-4 h-4" />
             </button>
-            <SidebarContent />
+            <SidebarInner
+              nav={nav}
+              currentPage={currentPage}
+              isAdmin={isAdmin}
+              userName={userName}
+              userRole={userRole}
+              onNavigate={handleNavigate}
+              onSignOut={onSignOut}
+            />
           </aside>
         </>
       )}
 
       <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
         <header
-          className="sticky top-0 z-20 px-4 lg:px-8 py-4 flex items-center justify-between lg:justify-end border-b"
-          style={{ backgroundColor: '#ffffff', borderColor: 'rgba(10,22,40,0.08)' }}
+          className="sticky top-0 z-20 flex items-center justify-between px-5 lg:px-8 h-14 border-b"
+          style={{ backgroundColor: 'white', borderColor: 'rgba(10,22,40,0.07)' }}
         >
-          <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 rounded-lg hover:bg-gray-100">
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="lg:hidden p-2 rounded-lg transition-colors hover:bg-gray-100"
+          >
             <Menu className="w-5 h-5" style={{ color: '#0A1628' }} />
           </button>
+
+          <div className="hidden lg:block" />
+
           <div className="flex items-center gap-3">
-            <div className="text-right hidden sm:block">
-              <p className="text-sm font-medium" style={{ color: '#0A1628' }}>{userName || 'User'}</p>
-              <p className="text-xs capitalize" style={{ color: 'rgba(10,22,40,0.5)' }}>
-                {isAdmin ? 'Administrator' : 'Sales Leader'}
-              </p>
-            </div>
-            <div
-              className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold"
-              style={{ backgroundColor: '#C9A227', color: '#0A1628' }}
+            <button
+              onClick={() => setNotifOpen(true)}
+              className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:bg-gray-100"
+              style={{ color: '#0A1628' }}
             >
-              {getInitials(userName)}
+              <Bell className="w-[18px] h-[18px]" />
+              {MOCK_NOTIF_COUNT > 0 && (
+                <span
+                  className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold"
+                  style={{ backgroundColor: '#C9A227', color: '#0A1628' }}
+                >
+                  {MOCK_NOTIF_COUNT}
+                </span>
+              )}
+            </button>
+
+            <div
+              className="hidden sm:flex items-center gap-2.5 pl-3 border-l"
+              style={{ borderColor: 'rgba(10,22,40,0.08)' }}
+            >
+              <div className="text-right">
+                <p
+                  className="text-sm font-semibold leading-tight"
+                  style={{ color: '#0A1628' }}
+                >
+                  {userName || 'User'}
+                </p>
+                <p
+                  className="text-[11px] leading-tight capitalize"
+                  style={{ color: 'rgba(10,22,40,0.45)' }}
+                >
+                  {isAdmin ? 'Administrator' : 'Sales Leader'}
+                </p>
+              </div>
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                style={{ backgroundColor: '#0A1628', color: '#C9A227' }}
+              >
+                {getInitials(userName)}
+              </div>
             </div>
           </div>
         </header>
-        <main className="flex-1 p-4 lg:p-8">{children}</main>
+
+        <main className="flex-1">{children}</main>
       </div>
+
+      <NotificationsDrawer isOpen={notifOpen} onClose={() => setNotifOpen(false)} />
     </div>
   );
 }
