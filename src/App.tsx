@@ -51,9 +51,9 @@ function App() {
     const path = currentPage;
 
     if (path === '/' || path === '/dashboard') {
-      return profile.role === 'admin' ? <Dashboard /> : <MyRequests />;
+      return profile.role === 'admin' ? <AdminDashboard /> : <SalesDashboard />;
     }
-    if (path === '/admin') return <Dashboard />;
+    if (path === '/admin') return <AdminDashboard />;
     if (path === '/my-requests') return <MyRequests />;
     if (path === '/new-request') return <NewRequest />;
     if (path === '/pending') return profile.role === 'admin' ? <PendingReview /> : <MyRequests />;
@@ -89,7 +89,7 @@ function App() {
       );
     }
 
-    return profile.role === 'admin' ? <Dashboard /> : <MyRequests />;
+    return profile.role === 'admin' ? <AdminDashboard /> : <SalesDashboard />;
   };
 
   return (
