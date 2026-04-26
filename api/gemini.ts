@@ -29,7 +29,7 @@ Respond with thoughtful coaching advice and ask reflective questions.`,
     );
 
     const data = await response.json();
-
+console.log("GEMINI RESPONSE:", JSON.stringify(data, null, 2));
     const text =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
       "No response generated.";
