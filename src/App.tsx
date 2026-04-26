@@ -26,6 +26,9 @@ import RequestProgramme from './pages/RequestProgramme';
 import TeamView from './pages/TeamView';
 import NominateStaff from './pages/NominateStaff';
 import HelpCenter from './pages/HelpCenter';
+import ManagerHub from './pages/ManagerHub';
+import ManagerHub from './pages/ManagerHub';
+import ManagerHub from './pages/ManagerHub';
 import ProfileSettings from './pages/ProfileSettings';
 
 import RequestDetail from './pages/RequestDetail';
@@ -106,6 +109,8 @@ function AppContent() {
     if (path === '/team-view') return <TeamView />;
     if (path === '/nominate-staff') return <NominateStaff />;
     if (path === '/help-center') return <HelpCenter />;
+  if (path === '/manager-hub') return <ManagerHub />;
+  if (path === '/manager-hub') return <ManagerHub />;
     if (path === '/profile-settings') return <ProfileSettings />;
 
     if (path.startsWith('/request/')) return <RequestDetail />;
