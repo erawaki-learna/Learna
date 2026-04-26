@@ -4,14 +4,26 @@ export default function ManagerHub() {
   const [input, setInput] = useState('');
   const [response, setResponse] = useState('');
 
-  const handleCoach = () => {
-    if (!input) return;
-    
-    // temporary mock response
-    setResponse(
-      "It sounds like you're facing a leadership challenge. What specifically did you try, and what outcome were you expecting?"
-    );
-  };
+  const handleCoach = async () => {
+  if (!input) return;
+
+  setResponse("Thinking...");
+
+  try {
+    const res = await fetch("/api/gemini", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ input }),
+    });
+
+    const data = await res.json();
+    setResponse(data.text);
+  } catch (err) {
+    setResponse("Something went wrong.");
+  }
+};
 
   return (
     <div className="p-6 max-w-2xl">
