@@ -110,6 +110,9 @@ function AppContent() {
     if (path === '/nominate-staff') return <NominateStaff />;
     if (path === '/help-center') return <HelpCenter />;
   if (path === '/manager-hub') return <ManagerHub />;
+  if (path === '/learner-profile') return <LearnerProfile />;
+  if (path === '/competency-assessment') return <CompetencyAssessment mode='self' onComplete={() => {}} />;
+  if (path === '/manager-hub') return <ManagerHub />;
   if (path === '/manager-hub') return <ManagerHub />;
     if (path === '/profile-settings') return <ProfileSettings />;
 

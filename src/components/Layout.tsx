@@ -1,5 +1,5 @@
-import { Brain, useState, ReactNode } from 'react';
-import { Brain,
+import { Brain, Brain, useState, ReactNode } from 'react';
+import { Brain, Brain,
   LayoutDashboard,
   Inbox,
   FileText,
@@ -64,6 +64,7 @@ const REQUESTOR_NAV: NavItem[] = [
   { label: 'Request a Programme', icon: Plus, path: '/request-programme' },
   { label: 'AI Learning Advisor', icon: Bot, path: '/d1/ai-advisor' },
   { label: 'My Learning Journey', icon: BookOpen, path: '/my-learning-journey' },
+  { label: 'Manager Hub', icon: Brain, path: '/manager-hub' },
   { label: 'Manager Hub', icon: Brain, path: '/manager-hub' },
   { label: 'My Team', icon: Users, path: '/team-view' },
   { label: 'Nominate Staff', icon: UserPlus, path: '/nominate-staff' },
